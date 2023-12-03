@@ -1,6 +1,7 @@
 
 #f = open("example.txt", "r")
 f = open("input.txt", "r")
+
 def symidxs(line:str):
    out =[]
    for i in range(len(line)) :
@@ -58,28 +59,68 @@ def checks(currNums, previdx,curridx,nextidx) -> int:
 
 def part1():
    print( "Part 1")
-   previdx = []
+   prevNums = []
    line = f.readline().strip()
    curridx = symidxs(line)
    currNums = num_ranges(line)
    sum = 0
    for line in f:
       line = line.strip()
-      nextidx = symidxs(line)
+      nextNums = num_ranges(line)
       
-      sum += checks(currNums, previdx, curridx, nextidx)
+      sum += checks(curridx, prevNums, currNums, nextNums)
             
-      previdx = curridx
-      curridx = nextidx
-      currNums = num_ranges(line)   
+      prevNums = currNums
+      currNums = nextNums
+      curridx = symidxs(line)   
    
    sum += checks(currNums, previdx, curridx, nextidx)
             
    print( f"Found {foundParts}of{found} possible parts\nSum of parts {sum}")
    
+def gearidxs(line:str):
+   out =[]
+   for i in range(len(line)) :
+      if(line[i] == '*'):
+         out.append(i)
+   return out
+
+def checks2(curridx,prevNums,currNums, nextNums) -> int:
+   sum = 0
+   nums = prevNums+currNums+nextNums
+   for idx in curridx:
+      ratio = 1
+      count = 0
+      for num in nums:
+         if( idx in num[1]):
+            count += 1
+            ratio *= num[0]
+      if(count==2):
+         sum+=ratio
+   return sum
+
 def part2():
    print( "Part 2")
+   prevNums = []
+   line = f.readline().strip()
+   curridx = gearidxs(line)
+   currNums = num_ranges(line)
+   sum = 0
+   for line in f:
+      line = line.strip()
+      nextNums = num_ranges(line)
+      
+      sum += checks2(curridx, prevNums, currNums, nextNums)
+            
+      prevNums = currNums
+      currNums = nextNums
+      curridx = gearidxs(line)   
+      
+   sum += checks2(curridx, prevNums, currNums, nextNums)
+   print( f"Sum of parts {sum}")
+            
    
-part1()
+   
+#part1()
 part2()
    
