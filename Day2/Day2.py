@@ -1,4 +1,5 @@
 import re
+import math
 #f = open("example.txt", "r")
 f = open("input.txt", "r")
 
@@ -43,9 +44,12 @@ def part2():
             num = int(dice[i*2])
             if(num>mincubes[color]):
                mincubes[color] = num
-      power = 1
-      for n in mincubes.values():
-         power = power*n
+      #my orginial
+      #power = 1
+      #for n in mincubes.values():
+      #   power = power*n
+      #easier way found
+      power = math.prod(mincubes.values())
       print( pulls[0] + " Power: " + str(power))
       sum += power
    print( f"Sum of Power {sum}")
