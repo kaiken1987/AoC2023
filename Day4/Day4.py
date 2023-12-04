@@ -13,6 +13,7 @@ def getWinCount( line:str)->int:
    for n in nums:
       if(n in win):
          count +=1
+   return count
 
 def part1():
    print( "Part 1")
@@ -25,6 +26,19 @@ def part1():
 
 def part2():
    print( "Part 2")
+   cards = []
+   total = 0
+   for line in f:
+      count = getWinCount(line)
+      card = {'winCnt':count, 'copies':1}
+      cards.append(card)
+   for i in range(len(cards)):
+      copies =cards[i]['copies']
+      winCnt = cards[i]['winCnt']
+      total += copies
+      for j in range(i+1,i+winCnt+1):
+         cards[j]['copies'] += copies
+   print(f"Total Cards {total}")
    
-part1()
+#part1()
 part2()
