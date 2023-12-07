@@ -43,12 +43,14 @@ class hand:
          result = result*16+c
       result = result/(16**5)                     
       pairs = 0
-      longest = 1                  
+      longest = 0                  
       for c in occur:
          if occur[c]>1:
             pairs+=1
-            longest = max(longest,occur[c])
-      longest += wilds
+         longest = max(longest,occur[c])
+      longest += wilds  
+      if(wilds and pairs==0):
+         pairs = 1         
       if(pairs==1):
          if(longest==5):
             return result+6
@@ -63,7 +65,9 @@ class hand:
             return result+4#fullhouse
          if(longest==2):
             return result+2#2pair                     
-      return result #highcard                                            
+      return result #highcard          
+   def __str__(self) -> str:
+      return f"Cards:{self.cards} Strength: {self.strength} Bet: {self.bet}"
                              
                                            
 
@@ -72,7 +76,7 @@ def part1():
    hands = []   
    for line in f:
       hands.append(hand(line,False))
-   hands.sort(key=lambda r: r.strenght,reverse=False)      
+   hands.sort(key=lambda r: r.strength,reverse=False)      
    winnings = 0
    for i in range(len(hands)):
       winnings += hands[i].bet*(i+1)    
@@ -81,13 +85,13 @@ def part2():
    print( "Part 2")
    hands = []   
    f.seek(0) 
-   for line in f:
+   for line in f:      
       hands.append(hand(line,True))
-   hands.sort(key=lambda r: r.strenght,reverse=False)      
+   hands.sort(key=lambda r: r.strength,reverse=False)       
    winnings = 0
    for i in range(len(hands)):
+      print( f"Hand {i}: {hands[i]}")      
       winnings += hands[i].bet*(i+1)    
    print(f"winnings {winnings}")  
    
-part1()
 part2()
