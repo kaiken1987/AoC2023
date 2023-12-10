@@ -1,12 +1,32 @@
-
+﻿
 #f = open("example.txt", "r")
 f = open("input.txt", "r")
+
+def lineStr(row)->str:
+	result = ""
+	for c in row:
+		if(c==3):
+			result += '-'
+		elif(c==5):
+			result += 'J'
+		elif(c==6):
+			result += 'L'
+		elif(c==9):
+			result += '7'
+		elif(c==10):
+			result += 'F'
+		elif(c==12):
+			result += '|'
+		else:
+			result += str(c)			
+	return result			
 
 class map_c:
 	startx = -1
 	starty = -1
 	routes = []
-	path = []	
+	path = []
+	tubes = []	
 	def addRow(self, line:str):
 		row = []
 		for x in line:         # 4
@@ -30,6 +50,13 @@ class map_c:
 			else:
 				row.append(0)								
 		self.routes.append(row)
+			
+	def __str__(self) -> str:
+		result = ""
+		for r in self.routes:
+			result += lineStr(r)+"\n"	
+		return result							
+	
 	def getNext(self, x, y, entry):
 		curr = self.routes[y][x]
 		curr = curr ^ entry
@@ -41,10 +68,12 @@ class map_c:
 			return (x,y-1,8)
 		elif curr == 8:
 			return (x,y+1,4)					
+		
 	def traverse(self) ->int:
 		currx = self.startx
 		curry = self.starty
 		curr = self.routes[curry][currx]
+		self.tubes = [' '*len(x) for x in self.routes]		
 		dir = 1			
 		if (curr & 1) != 0:
 			dir = 1				
@@ -57,11 +86,34 @@ class map_c:
 		steps = 1			
 		currx,curry,dir = self.getNext(currx,curry,dir)
 		self.path.append((currx,curry))
+		#self.tubes[curry]. [currx] = 'X'		
 		while(currx!=self.startx) or (curry!=self.starty):
 			currx,curry,dir = self.getNext(currx,curry,dir)
-			self.path.append((currx,curry))			
+			self.path.append((currx,curry))
+			#self.tubes[curry][currx] = 'X'			
 			steps += 1			
-		return steps					
+		return steps	
+	def insidePath(self):
+		count = 0		
+		for r, row in enumerate( self.routes ):
+			line = ""			
+			for c, item in enumerate(row):	
+				inside = False
+				on = False				
+				for p in self.path:
+					if(p[0] == c) and (p[1]==r):
+						inside = False
+						on = True
+						break
+					if(p[0] == c) and (p[1]<r) and (self.routes[p[1]][p[0]] &2):
+						inside = not inside
+				if (inside&1): 
+					count += 1
+					row[c] = 'O'
+				else: row[c] = ' '
+			print(f"{r+1000}: {lineStr(row)}")
+		return count
+			
 mymap = map_c()
 for line in f:
 	mymap.addRow(line)	
@@ -69,11 +121,14 @@ for line in f:
 def part1():
 	print( "Part 1")	
 	steps = (mymap.traverse())>>1 
+	print( str(mymap) )	 
 	print( f"A journey of {steps} steps")	
 							 
 	
 def part2():
 	print( "Part 2")
+	inside = mymap.insidePath()
+	print( f"{inside} points inside")	
 	
 part1()
 part2()
