@@ -5,20 +5,12 @@ f = open("input.txt", "r")
 def lineStr(row)->str:
 	result = ""
 	for c in row:
-		if(c==3):
-			result += '-'
-		elif(c==5):
-			result += 'J'
-		elif(c==6):
-			result += 'L'
-		elif(c==9):
-			result += '7'
-		elif(c==10):
-			result += 'F'
-		elif(c==12):
-			result += '|'
-		else:
-			result += str(c)			
+		if type(c) is str:
+			result += c
+		elif c >16:
+			result += str(c)
+		else:			
+			result += ' '
 	return result			
 
 class map_c:
@@ -110,7 +102,7 @@ class map_c:
 				if (inside&1): 
 					count += 1
 					row[c] = 'O'
-				else: row[c] = ' '
+				elif(not on): row[c] = ' '
 			print(f"{r+1000}: {lineStr(row)}")
 		return count
 			
